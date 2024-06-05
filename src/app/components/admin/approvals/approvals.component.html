@@ -1,0 +1,33 @@
+@if (InAprrovals && InAprrovals.length > 0) {
+    <h2 class="mb-3 mt-5 ms-2">Aprovações</h2>
+
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">CLIENTE</th>
+            <th scope="col">PRODUTO</th>
+            <th scope="col">DATA</th>
+            <th scope="col">STATUS</th>
+            <th scope="col">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+            @for (item of InAprrovals; track item.id) {
+                <tr>
+                    <th scope="row">{{ item.id }}</th>
+                    <td>{{ item.clientId }}</td>
+                    <td>{{ item.productId }}</td>
+                    <td>{{ item.purchaseDate | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ item.isApproved }}</td>
+                    <td><button (onclick)="Approve()">Aprovar</button></td>
+                </tr>
+            }
+        </tbody>
+         
+    </table>
+}
+@else {
+    <div class="alert alert-warning" role="alert">
+        Não há aprovações pendentes.
+    </div>}

@@ -1,0 +1,72 @@
+/* Estiliza o botão de envio */
+.btn-primary {
+    background-color: #ff8400cd;
+    border-color: #ff7b002c;
+    margin-top: 10px; /* Espaçamento na parte superior do botão */
+}
+  
+.btn-primary:hover {
+    background-color: #5e08a6; /* Nova cor ao passar o mouse */
+    border-color: #23012d; /* Nova cor ao passar o mouse */
+}
+
+  
+/* Centraliza o formulário verticalmente */
+html, body {
+    height: 100%;
+}
+  
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa;
+}
+  
+.container {
+    max-width: 400px;
+    margin-top: 50px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+  
+/* Campo de entrada */
+.form-control {
+    border-radius: 5px;
+}
+  
+/* Título do formulário */
+.card-title {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-title {
+    color: #5f1690;
+}
+
+/* Texto de ajuda */
+.small-text-muted {
+    font-size: 10px; /* Tamanho da fonte reduzido */
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 20px;
+}
+  
+.register-link a {
+    color: #007bff; /* Cor do link personalizada */
+    text-decoration: none; /* Remover sublinhado do link */
+}
+  
+.register-link a:hover {
+    text-decoration: underline; /* Adicionar sublinhado ao passar o mouse sobre o link */
+}
+
+.btn-block {
+    margin-left: auto;
+    margin-right: auto;
+}

@@ -1,0 +1,51 @@
+<div class="container">
+  <div class="card">
+    <div class="card-body">
+      <h3 class="card-title login-title">Login</h3>
+      <form [formGroup]="userForm">
+        <div class="form-group">
+          <label for="exampleInputEmail1">
+            <i class="bi bi-envelope"></i> E-mail
+          </label>
+          <input
+            type="email"
+            class="form-control"
+            id="exampleInputEmail1"
+            formControlName="email"
+            placeholder="Digite seu e-mail de cadastro"
+          />
+          <small id="emailHelp" class="form-text text-muted small-text-muted"
+            >A Wunderbar não compartilhará seu e-mail.</small
+          >
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">
+            <i class="bi bi-lock"></i> Senha
+          </label>
+          <input
+            type="password"
+            class="form-control"
+            id="exampleInputPassword1"
+            formControlName="password"
+            placeholder="Senha"
+          />
+        </div>
+        <div class="text-center">
+          <!-- Adicionando a classe text-center para centralizar o botão -->
+          <button
+            class="btn btn-primary btn-block"
+            (click)="submitForm()"
+          >
+            cliente
+          </button>
+          <button
+            class="btn btn-primary btn-block"
+            (click)="admin()"
+          >
+            admin
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+@if (ContribuitionList && ContribuitionList.length > 0) {
+    <h2 class="mb-3 mt-5 ms-2">Aportes</h2>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">CLIENTE</th>
+            <th scope="col">PRODUTO</th>
+            <th scope="col">DATA</th>
+            <th scope="col">STATUS</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+            @for (item of ContribuitionList; track item.id) {
+                <tr>
+                    <th scope="row">{{ item.id }}</th>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.purchaseId }}</td>
+                    <td>{{  item.amount | currency }}</td>
+                    <td>{{ item.date | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
+                </tr>
+            }
+        </tbody>
+         
+    </table>
+}
+@else {
+    <div class="alert alert-warning" role="alert">
+        Não há aportes.
+    </div>}

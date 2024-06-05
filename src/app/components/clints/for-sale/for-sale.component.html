@@ -1,0 +1,29 @@
+@if (produstsForSale && produstsForSale.length > 0) {
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">CLIENTE</th>
+            <th scope="col">PRODUTO</th>
+            <th scope="col">DATA</th>
+            <th scope="col">STATUS</th>
+            <th scope="col">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+            @for (item of produstsForSale; track item.id) {
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.available }}</td>
+                    <td><button (onclick)="purchase()">Comprar</button></td>
+                </tr>
+            }
+        </tbody>
+         
+    </table>
+}
+@else {
+    <div class="alert alert-warning" role="alert">
+        Não há produtos.
+    </div>}
