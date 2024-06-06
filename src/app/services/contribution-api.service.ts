@@ -3,6 +3,10 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { IContribution } from '../models/contribution';
 import { API_URLS } from '../app.config'; 
+import { IContributionDtos } from '../dtos/contributionDto';
+import { ProductApiService } from './product-api.service';
+import { PurchaseApiService } from './purchase-api.service';
+import { UserApiService } from './user-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +18,30 @@ export class ContributionApiService {
   
   private contribuitionsSubject = new BehaviorSubject<IContribution[]>([]);
   public contribuitionsList$ = this.contribuitionsSubject.asObservable();
+ 
+  private contribuitionsByUserSubject = new BehaviorSubject<IContribution[]>([]);
+  public contribuitionsListByUser$ = this.contribuitionsByUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  contributions: IContributionDtos[] = [];
+
+
+  constructor(private http: HttpClient, private userApiService: UserApiService, private productApiService: ProductApiService, private purchaseApiService: PurchaseApiService) {
     this.token = sessionStorage.getItem('token');
-    this.updateToken();
-    this.getAllContribuitions();
+    if(this.token){
+      this.Initialize()
+    }
+    else{
+      this.updateToken();
+    }
   }
-
+  Initialize(){
+    const token = this.decoteToken(this.token);
+    if (token.role === 'admin'){ 
+    this.getAllContribuitions();
+    } else if(token.role === 'client') {
+      this.getContribuitionByUser(token.nameid);
+    }
+  }
   private updateToken() {
     this.token = sessionStorage.getItem('token');
   }
@@ -51,17 +72,76 @@ export class ContributionApiService {
     return this.http.get<IContribution>(`${this.API_URL_PURCHASE}/${contribuitionId}`, { headers });
   }
 
+  getContribuitionByUser(userId: number) {
+    const headers = this.getHeaders();
+    this.http.get<IContribution[]>(`${this.API_URL_PURCHASE}/GetByUser/${userId}`, { headers }).subscribe(
+      (contribuitions: IContribution[]) => {
+        this.contribuitionsByUserSubject.next(contribuitions);
+      },
+      error => {
+        console.error('Error fetching products', error);
+      }
+    );
+  }
+
   addContribuition(contribuition: IContribution) {
     const headers = this.getHeaders();
     return this.http.post<IContribution>(this.API_URL_PURCHASE, contribuition, { headers }).subscribe(
       () => {
-        this.getAllContribuitions();
+        this.Initialize();
       },
       error => {
         console.error('Error fetching products', error);
       }
     );
 
+  }
+
+  converter(contributions: IContribution[], username: string | null = null) {
+    contributions.forEach((contribution) => {
+      if (!contribution.id) return;
+  
+      let contributionDto: IContributionDtos = {
+        id: contribution.id,
+        clientName: '',
+        productName: '',
+        purchaseId: contribution.purchaseId,
+        amount: contribution.amount,
+        contributionDate: contribution.contributionDate
+      };
+      console.log(username)
+      if (username) {
+        contributionDto.clientName = username;
+        
+      } else {
+        const purchase = this.purchaseApiService.getPurchaseById(contribution.purchaseId);
+        purchase.subscribe((purchase) => {
+          console.log(purchase);
+          this.userApiService.getUserById(purchase.clientId).subscribe((user) => {
+            contributionDto.clientName = user.userName;
+            console.log(user);
+            this.productApiService.getProductById(purchase.productId).subscribe((product) => {
+              contributionDto.productName = product.name;
+              console.log(product);
+            });
+          });
+        });
+      }
+  
+      this.contributions.push(contributionDto);
+      console.log(this.contributions);
+    });
+  
+    return this.contributions;
+  }
+  
+  decoteToken(token: string | null) {
+    if (token) {
+      const tokenPayload = token.split('.')[1];
+      const tokenPayloadDecoded = atob(tokenPayload);
+      return JSON.parse(tokenPayloadDecoded);
+    }
+    return null;
   }
 }
 

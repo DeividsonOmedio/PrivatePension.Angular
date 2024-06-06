@@ -5,6 +5,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 import { API_URLS, appConfig } from '../app.config'; 
 import { ProductApiService } from './product-api.service';
+import { IPurchaseDto } from '../dtos/purchaseDto';
+import { UserApiService } from './user-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +25,9 @@ export class PurchaseApiService {
   private inApprovalsSubject = new BehaviorSubject<IPurchase[]>([]);
   public inApprovalsList$ = this.inApprovalsSubject.asObservable();
 
+  Approvals: IPurchaseDto[] = [];
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private userApiService: UserApiService, private productApiService: ProductApiService) {
     this.Initialize();
   }
 
@@ -142,6 +145,30 @@ export class PurchaseApiService {
         console.error('Error deleting purchase', error);
       }
     );
+  }
+
+  converter(approvalList: IPurchase[]) {
+  approvalList.forEach((approval) => {
+      if (!approval.id) return; 
+      let purchaseDto: IPurchaseDto = {
+        id: approval.id,
+        clientName: '',
+        productName: '',
+        purchaseDate: approval.purchaseDate, 
+        isApproved: approval.isApproved 
+      };
+      this.userApiService.getUserById(approval.id).subscribe((user) => {
+        purchaseDto.clientName = user.userName;
+        this.productApiService.getProductById(approval.productId).subscribe((productName) => {
+          purchaseDto.productName = productName.name;
+
+      });
+
+      this.Approvals.push(purchaseDto);
+    });
+      });
+      console.log(this.Approvals);
+      return this.Approvals;
   }
 
   decodeToken(token: string): any {

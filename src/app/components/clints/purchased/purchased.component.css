@@ -1,0 +1,6 @@
+.aportesTitle::first-line {
+   display: none;
+}
+.aportesTitle:first-child {
+   display: block;
+}

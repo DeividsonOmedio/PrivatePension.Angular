@@ -20,15 +20,17 @@ export class ProductApiService {
 
   constructor(private http: HttpClient) {
     this.token = sessionStorage.getItem('token');
-    //this.getAllProducts();
     if (this.token){
         this.Initialize();
     }
   }
   Initialize(){
     const token = this.decodeToken(this.token);
-    console.log(token.nameid);
-    this.getProductsForSale(token.nameid);
+    if (token.role === 'admin'){
+      this.getAllProducts();
+    } else if(token.role === 'client') {
+      this.getProductsForSale(token.nameid);
+    }
   }
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({

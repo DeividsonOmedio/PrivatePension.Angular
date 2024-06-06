@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IPurchase } from '../../../models/purchase';
 import { PurchaseApiService } from '../../../services/purchase-api.service';
 import { DatePipe, NgIf } from '@angular/common';
+import { IPurchaseDto } from '../../../dtos/purchaseDto';
 
 @Component({
   selector: 'app-puschases',
@@ -16,6 +17,7 @@ throw new Error('Method not implemented.');
 }
 
   PurschaseAprovedList: IPurchase[] = []; 
+  PurschaseAprovedListDto: IPurchaseDto[] = []; 
 
   constructor(private apiPuchasesService: PurchaseApiService) {}
 
@@ -23,6 +25,7 @@ throw new Error('Method not implemented.');
     this.apiPuchasesService.purchasesAprovedList$.subscribe((puchasesAprovedList) => {
       this.PurschaseAprovedList = puchasesAprovedList;
       console.log(puchasesAprovedList);
+      this.PurschaseAprovedListDto = this.apiPuchasesService.converter(puchasesAprovedList);
     });
   }
 

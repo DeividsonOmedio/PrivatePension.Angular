@@ -1,4 +1,4 @@
-@if (PurschaseAprovedList && PurschaseAprovedList.length > 0) {
+@if (PurschaseAprovedListDto && PurschaseAprovedListDto.length > 0) {
     <h2 class="mb-3 mt-5 ms-2">Compras Aprovadas</h2>
     <table class="table m-2 p-2">
         <thead>
@@ -12,11 +12,11 @@
           </tr>
         </thead>
         <tbody>
-            @for (item of PurschaseAprovedList; track item.id) {
+            @for (item of PurschaseAprovedListDto; track item.id) {
                 <tr>
                     <th scope="row">{{ item.id }}</th>
-                    <td>{{ item.clientId }}</td>
-                    <td>{{ item.productId }}</td>
+                    <td>{{ item.clientName }}</td>
+                    <td>{{ item.productName }}</td>
                     <td>{{  item.purchaseDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
                     <td>{{ item.isApproved ? 'Aprovado' : 'Pendente'}}</td>
                 </tr>

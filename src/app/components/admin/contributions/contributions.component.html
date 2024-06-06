@@ -1,18 +1,22 @@
-@if (ContribuitionList && ContribuitionList.length > 0) {
+@if (ContribuitionListDto && ContribuitionListDto.length > 0) {
     <h2 class="mb-3 mt-5 ms-2">Aportes</h2>
     <table class="table">
         <thead>
           <tr>
             <th scope="col">ID</th>
-            <th scope="col">PRODUTO</th>
+            <th scope="col">Cliente</th>
+            <th scope="col">Produto</th>
+            <th scope="col">Venda</th>
             <th scope="col">Valor</th>
             <th scope="col">DATA</th>
           </tr>
         </thead>
         <tbody>
-            @for (item of ContribuitionList; track item.id) {
+            @for (item of ContribuitionListDto; track item.id) {
                 <tr>
                     <th scope="row">{{ item.id }}</th>
+                    <td>{{ item.clientName }}</td>
+                    <td>{{ item.productName }}</td>
                     <td>{{ item.purchaseId }}</td>
                     <td>{{  item.amount | currency }}</td>
                     <td>{{ item.contributionDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>

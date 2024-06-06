@@ -1,33 +1,57 @@
+
 @if (purchasedList && purchasedList.length > 0) {
+    @for (item of purchasedList; track item.id) {
     <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">PRODUTO</th>
-            <th scope="col">DATA</th>
-            <th scope="col">STATUS</th>
-            <th scope="col">&nbsp;</th>
+      <thead class="table-secondary">
+        <tr>
+          <th colspan="2" scope="col">PRODUTO</th>
+          <th scope="col">DATA</th>
+          <th scope="col">STATUS</th>
+          <th colspan="2" scope="col">&nbsp;</th>
           </tr>
-        </thead>
-        <tbody>
-            <tbody>
-                @for (item of purchasedList; track item.id) {
-                    <tr>
-                        <td>{{ item.productId }}</td>
-                        <td>{{  item.purchaseDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
-                        <td>{{ item.isApproved ? 'Aprovado' : 'Pendente'}}</td>
-                        @if(!item.isApproved) {
-                            <td>
-                                <button type="button" class="btn btn-primary" (click)="CancelPurchase(item.id)">Cancelar Compra</button>
-                            </td>
-                        }
-                        
-                    </tr>
-                }
-            </tbody>
-         
-    </table>
+          </thead>
+          <tbody>
+          <tr>
+            <td colspan="2">{{ item.productId }}</td>
+            <td>{{ item.purchaseDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
+            <td>{{ item.isApproved ? 'Aprovado' : 'Pendente' }}</td>
+            @if (!item.isApproved) {
+            <td>
+              <button type="button" class="btn btn-primary" (click)="CancelPurchase(item.id)">Cancelar Compra</button>
+            </td>
+            } @else {
+            <td>
+              <button type="button" class="btn btn-primary" (click)="ContributionInPurchase(item.id)" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">Realizar Aporte</button>
+            </td>
+            }
+            <th>&nbsp;</th>
+            </tr>
+            @for (contribution of contributionsList; track contribution.id;){
+            @if (contribution.purchaseId === item.id) {
+            <tr>
+              <th>&nbsp;</th>
+              <td rowspan="2"><small>Aporte:</small></td>
+              <th scope="col">Id</th>
+              <th scope="col">Valor</th>
+              <th scope="col">Data</th>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>{{ contribution.id }}</td>
+              <td>{{ contribution.amount }}</td>
+              <td>{{ contribution.contributionDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
+            </tr>
+            }
+    }
+  </tbody>
+</table>
 }
-@else {
+  } @else {
     <div class="alert alert-warning" role="alert">
-        Não há produtos comprados.
-    </div>}
+      Não há produtos comprados.
+    </div>
+    }
+    
+    <app-modal [Title]="'Aporte'" [BtnConfirm]="'Realizar Aporte'" (amountChange)="onAmountChange($event)">
+    </app-modal>

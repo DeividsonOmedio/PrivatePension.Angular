@@ -11,13 +11,15 @@
         </thead>
         <tbody>
             @for (item of produstsForSale; track item.id) {
-                <tr>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.price }}</td>
-                    <td>{{ item.description }}</td>
-                    <td>{{ item.available }}</td>
-                    <td><button (click)="purchase(item.id)">Comprar</button></td>
-                </tr>
+                @if(item.available) {
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.price }}</td>
+                        <td>{{ item.description }}</td>
+                            <td>Disponível</td>
+                        <td><button (click)="purchase(item.id)" data-bs-toggle="modal" data-bs-target="#exampleModal">Comprar</button></td>
+                    </tr>
+                }
             }
         </tbody>
          
@@ -26,4 +28,6 @@
 @else {
     <div class="alert alert-warning" role="alert">
         Não há produtos.
-    </div>}
+    </div> 
+}
+

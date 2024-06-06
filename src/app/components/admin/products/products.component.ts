@@ -18,6 +18,7 @@ export class ProductsComponent implements OnInit {
   constructor(private apiProductService: ProductApiService, private route: Router) {}
 
   ngOnInit(): void {
+    this.apiProductService.Initialize();
     this.apiProductService.productsList$.subscribe((productsList) => {
       this.productsList = productsList;
       console.log(productsList);

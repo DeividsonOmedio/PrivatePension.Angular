@@ -1,4 +1,4 @@
-@if (InAprrovals && InAprrovals.length > 0) {
+@if (InAprrovalsDto && InAprrovals.length > 0) {
     <h2 class="mb-3 mt-5 ms-2">Aprovações</h2>
 
     <table class="table">
@@ -13,11 +13,11 @@
           </tr>
         </thead>
         <tbody>
-            @for (item of InAprrovals; track item.id) {
+            @for (item of InAprrovalsDto; track item.id) {
                 <tr>
                     <th scope="row">{{ item.id }}</th>
-                    <td>{{ item.clientId }}</td>
-                    <td>{{ item.productId }}</td>
+                    <td>{{ item.clientName }}</td>
+                    <td>{{ (item.productName).substring(0, 35) }}</td>
                     <td>{{ item.purchaseDate | date: 'dd/MM/yyyy' }}</td>
                     <td>{{ item.isApproved }}</td>
                     <td><button (click)="Approve(item.id)">Aprovar</button></td>

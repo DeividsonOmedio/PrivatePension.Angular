@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IContribution } from '../../../models/contribution';
 import { ContributionApiService } from '../../../services/contribution-api.service';
 import { AsyncPipe, CurrencyPipe, DatePipe } from '@angular/common';
+import { IContributionDtos } from '../../../dtos/contributionDto';
 
 @Component({
   selector: 'app-contributions',
@@ -14,6 +15,7 @@ export class ContributionsComponent implements OnInit {
  
   
   ContribuitionList: IContribution[] = []; 
+  ContribuitionListDto: IContributionDtos[] = []; 
   
     constructor(private apiContribuitionsService: ContributionApiService) {}
   
@@ -24,5 +26,7 @@ export class ContributionsComponent implements OnInit {
         console.log(contribuitions);
       });
       console.log(this.ContribuitionList);
+      this.ContribuitionListDto = this.apiContribuitionsService.converter(this.ContribuitionList);
+      console.log(this.ContribuitionListDto);
     }
   }
