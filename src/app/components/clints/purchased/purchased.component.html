@@ -10,17 +10,17 @@
           </tr>
         </thead>
         <tbody>
-            @for (item of purchasedList; track item.id) {
-                <tr>
-                    <td>{{ item.clientId }}</td>
-                    <td>{{ item.productId }}</td>
-                    <td>{{ item.purchaseDate }}</td>
-                    <td>{{ item.isApproved }}</td>
-                    <td><button (onclick)="contribution()">Aporte</button></td>
-                    <td><button (onclick)="calcel()">Cancelar</button></td>
-                </tr>
-            }
-        </tbody>
+            <tbody>
+                @for (item of purchasedList; track item.id) {
+                    <tr>
+                        <th scope="row">{{ item.id }}</th>
+                        <td>{{ item.clientId }}</td>
+                        <td>{{ item.productId }}</td>
+                        <td>{{  item.purchaseDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
+                        <td>{{ item.isApproved ? 'Aprovado' : 'Pendente'}}</td>
+                    </tr>
+                }
+            </tbody>
          
     </table>
 }

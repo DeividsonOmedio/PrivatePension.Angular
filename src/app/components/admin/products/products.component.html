@@ -1,4 +1,4 @@
-<a  routerLink="/admin/manageproduct">adicionar produto</a>
+<a  routerLink="/admin/manageproduct/create">adicionar produto</a>
 @if (productsList && productsList.length > 0) {
     <table class="table">
         <thead>
@@ -19,8 +19,8 @@
                     <td>{{ item.price }}</td>
                     <td>{{ item.description }}</td>
                     <td>{{ item.available ? 'Disponível' : 'Indisponível' }}</td>
-                    <td><button (onclick)="Edite()">Editar</button></td>
-                    <td><button (onclick)="Delete()">Deletar</button></td>
+                    <td><button (click)="Edit(item.id)">Editar</button></td>
+                    <td><button (click)="Delete()">Deletar</button></td>
                 </tr>
             }
         </tbody>

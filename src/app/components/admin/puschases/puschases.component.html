@@ -1,6 +1,6 @@
-@if (PurschaseList && PurschaseList.length > 0) {
-    <h2 class="mb-3 mt-5 ms-2">Compras</h2>
-    <table class="table">
+@if (PurschaseAprovedList && PurschaseAprovedList.length > 0) {
+    <h2 class="mb-3 mt-5 ms-2">Compras Aprovadas</h2>
+    <table class="table m-2 p-2">
         <thead>
           <tr>
             <th scope="col">ID</th>
@@ -12,15 +12,13 @@
           </tr>
         </thead>
         <tbody>
-            @for (item of PurschaseList; track item.id) {
+            @for (item of PurschaseAprovedList; track item.id) {
                 <tr>
                     <th scope="row">{{ item.id }}</th>
                     <td>{{ item.clientId }}</td>
                     <td>{{ item.productId }}</td>
                     <td>{{  item.purchaseDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
                     <td>{{ item.isApproved ? 'Aprovado' : 'Pendente'}}</td>
-                    <td *ngIf="!item.isApproved; else empty"><button (onclick)="Approve()">Aprovar</button></td>
-                    <ng-template  #empty> <td></td></ng-template>
                 </tr>
             }
         </tbody>

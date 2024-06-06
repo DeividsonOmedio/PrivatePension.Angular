@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { IContribution } from '../../../models/contribution';
 import { ContributionApiService } from '../../../services/contribution-api.service';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-contributions',
   standalone: true,
-  imports: [DatePipe, CurrencyPipe],
+  imports: [DatePipe, CurrencyPipe, AsyncPipe],
   templateUrl: './contributions.component.html',
   styleUrl: './contributions.component.css'
 })

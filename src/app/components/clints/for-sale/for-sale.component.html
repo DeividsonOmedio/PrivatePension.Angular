@@ -2,9 +2,9 @@
     <table class="table">
         <thead>
           <tr>
-            <th scope="col">CLIENTE</th>
-            <th scope="col">PRODUTO</th>
-            <th scope="col">DATA</th>
+            <th scope="col">NOME</th>
+            <th scope="col">PREÇO</th>
+            <th scope="col">DESCRIÇÃO</th>
             <th scope="col">STATUS</th>
             <th scope="col">&nbsp;</th>
           </tr>
@@ -16,7 +16,7 @@
                     <td>{{ item.price }}</td>
                     <td>{{ item.description }}</td>
                     <td>{{ item.available }}</td>
-                    <td><button (onclick)="purchase()">Comprar</button></td>
+                    <td><button (click)="purchase(item.id)">Comprar</button></td>
                 </tr>
             }
         </tbody>

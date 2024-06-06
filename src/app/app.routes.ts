@@ -23,13 +23,13 @@ export const routes: Routes = [
             { path: 'clients', component: UsersComponent },
             {   path: "",
                 children: [    
-                {path: 'manageproduct', component: CreateProductComponent},
-                {path: 'manageproduct/:id', component: CreateProductComponent}
+                {path: 'manageproduct/create', component: CreateProductComponent},
+                {path: 'manageproduct/edit/:id', component: CreateProductComponent}
             ]},
             {   path: "",
                 children: [    
-                {path: 'manageuser', component: CreateClientComponent},
-                {path: 'manageuser/:id', component: CreateClientComponent}
+                {path: 'manageuser/create', component: CreateClientComponent},
+                {path: 'manageuser/edit/:id', component: CreateClientComponent}
             ]}
         ]
     },

@@ -17,10 +17,16 @@ export class ContributionApiService {
 
   constructor(private http: HttpClient) {
     this.token = sessionStorage.getItem('token');
+    this.updateToken();
     this.getAllContribuitions();
   }
 
+  private updateToken() {
+    this.token = sessionStorage.getItem('token');
+  }
+
   private getHeaders(): HttpHeaders {
+    console.log(this.token);
     return new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.token}`
@@ -31,12 +37,31 @@ export class ContributionApiService {
     const headers = this.getHeaders();
     this.http.get<IContribution[]>(this.API_URL_PURCHASE, { headers }).subscribe(
       (contribuitions: IContribution[]) => {
+        console.log(contribuitions);
         this.contribuitionsSubject.next(contribuitions);
       },
       error => {
         console.error('Error fetching products', error);
       }
     );
+  }
+
+  getContribuitionById(contribuitionId: number) {
+    const headers = this.getHeaders();
+    return this.http.get<IContribution>(`${this.API_URL_PURCHASE}/${contribuitionId}`, { headers });
+  }
+
+  addContribuition(contribuition: IContribution) {
+    const headers = this.getHeaders();
+    return this.http.post<IContribution>(this.API_URL_PURCHASE, contribuition, { headers }).subscribe(
+      () => {
+        this.getAllContribuitions();
+      },
+      error => {
+        console.error('Error fetching products', error);
+      }
+    );
+
   }
 }
 

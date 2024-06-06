@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule  } from '@angular/forms';
+import { IProduct } from '../../../models/product';
+import { ProductApiService } from '../../../services/product-api.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-product',
@@ -8,18 +11,35 @@ import { FormControl, FormGroup, ReactiveFormsModule  } from '@angular/forms';
   templateUrl: './create-product.component.html',
   styleUrl: './create-product.component.css'
 })
-export class CreateProductComponent {
+export class CreateProductComponent implements OnInit{
   productForm: FormGroup;
-  
-  constructor() {
+  product?: IProduct;
+  productId: number;
+  btnSubmit: string = 'Cadastrar';
+  constructor(private apiProduvtService: ProductApiService, private route: ActivatedRoute, private routes: Router) {
+    this.productId = this.route.snapshot.params['id'];
     this.productForm = new FormGroup({
-      name: new FormControl(),
-      price: new FormControl(),
-      description: new FormControl(),
-      avaliable: new FormControl(),
+      name: new FormControl(this.product?.name),
+      price: new FormControl(this.product?.price),
+      description: new FormControl(this.product?.description),
+      available: new FormControl(this.product?.available),
+    });
+  }
+  ngOnInit(): void {
+    this.apiProduvtService.getProductById(this.productId).subscribe((product) => {
+      this.product = product;
+      this.productForm.patchValue(product);
+      this.btnSubmit = 'Atualizar';
     });
   }
   submitForm() {
-  throw new Error('Method not implemented.');
+    if (this.product) {
+    this.productForm.value.available = this.productForm.value.available === 'true' ? true : false;
+    const response = this.apiProduvtService.updateProduct({ ...this.product, ...this.productForm.value });
+  } else {
+    this.apiProduvtService.addProduct(this.productForm.value).subscribe(() => {
+    });
   }
+  this.routes.navigate(['/admin/products']);
+}
 }

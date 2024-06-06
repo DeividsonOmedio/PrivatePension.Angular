@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { IPurchase } from '../models/purchase';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -11,16 +12,27 @@ export class PurchaseApiService {
   private token: string | null;
   private readonly API_URL_PURCHASE = 'http://localhost:5041/api/Purchase';
   
-  private purchasesSubject = new BehaviorSubject<IPurchase[]>([]);
-  public purchasesList$ = this.purchasesSubject.asObservable();
+  private purchasesAprovedSubject = new BehaviorSubject<IPurchase[]>([]);
+  public purchasesAprovedList$ = this.purchasesAprovedSubject.asObservable();
+ 
+  private purchasedsSubject = new BehaviorSubject<IPurchase[]>([]);
+  public purchasedsList$ = this.purchasedsSubject.asObservable();
 
   private inApprovalsSubject = new BehaviorSubject<IPurchase[]>([]);
   public inApprovalsList$ = this.inApprovalsSubject.asObservable();
 
+
   constructor(private http: HttpClient) {
     this.token = sessionStorage.getItem('token');
-    this.getAllPurchase();
-    this.getInApprovals();
+    if (this.token) { 
+      const token = this.decodeToken(this.token);
+      if (token.role === 'admin'){
+        this.getAprovedPurchase();
+        this.getInApprovals();
+      } else if(token.role === 'client') {
+        this.getPurchaseByClient(token.nameid);
+      }
+    }
   }
 
   private getHeaders(): HttpHeaders {
@@ -30,11 +42,11 @@ export class PurchaseApiService {
     });
   }
 
-  getAllPurchase() {
+  getAprovedPurchase() {
     const headers = this.getHeaders();
-    this.http.get<IPurchase[]>(this.API_URL_PURCHASE, { headers }).subscribe(
+    this.http.get<IPurchase[]>(`${this.API_URL_PURCHASE}/GetByApproved/isApproved`, { headers }).subscribe(
       (purchases: IPurchase[]) => {
-        this.purchasesSubject.next(purchases);
+        this.purchasesAprovedSubject.next(purchases);
       },
       error => {
         console.error('Error fetching products', error);
@@ -52,5 +64,83 @@ export class PurchaseApiService {
         console.error('Error fetching in approvals', error);
       }
     );
+  }
+
+  getPurchaseById(purchaseId: number) {
+    const headers = this.getHeaders();
+    return this.http.get<IPurchase>(`${this.API_URL_PURCHASE}/${purchaseId}`, { headers });
+  }
+ 
+  getPurchaseByClient(purchaseId: number) {
+    const headers = this.getHeaders();
+    this.http.get<IPurchase[]>(`${this.API_URL_PURCHASE}/GetByClient/${purchaseId}`, { headers }).subscribe(
+      (purchase: IPurchase[]) => {
+        this.purchasedsSubject.next(purchase);
+      },
+      error => {
+        console.error('Error fetching purchase by client', error);
+      }
+    );
+  }
+
+  toApprovePurchase(purchaseId: number) {
+    const headers = this.getHeaders();
+    this.http.put(`${this.API_URL_PURCHASE}/Approve/${purchaseId}`, {}, { headers }).subscribe(
+      () => {
+        this.getAprovedPurchase();
+        this.getInApprovals();
+      },
+      error => {
+        console.error('Error approving purchase', error);
+      }
+    );
+  }
+
+  addPurchase(purchase: IPurchase) {
+    const headers = this.getHeaders();
+    this.http.post(this.API_URL_PURCHASE, purchase, { headers }).subscribe(
+      () => {
+        this.getAprovedPurchase();
+        this.getInApprovals();
+      },
+      error => {
+        console.error('Error adding purchase', error);
+      }
+    );
+  }
+
+  updatePurchase(purchase: IPurchase) {
+    const headers = this.getHeaders();
+    this.http.put(`${this.API_URL_PURCHASE}/${purchase.id}`, purchase, { headers }).subscribe(
+      () => {
+        this.getAprovedPurchase();
+        this.getInApprovals();
+      },
+      error => {
+        console.error('Error updating purchase', error);
+      }
+    );
+  }
+
+  deletePurchase(purchaseId: number) {
+    const headers = this.getHeaders();
+    this.http.delete(`${this.API_URL_PURCHASE}/${purchaseId}`, { headers }).subscribe(
+      () => {
+        this.getAprovedPurchase();
+        this.getInApprovals();
+      },
+      error => {
+        console.error('Error deleting purchase', error);
+      }
+    );
+  }
+
+  decodeToken(token: string): any {
+    try {
+      return jwtDecode(token);
+    } catch (Error) {
+      console.error('Error decoding token:', Error);
+      return null;
+    }
   }
 }

@@ -15,14 +15,14 @@ Approve() {
 throw new Error('Method not implemented.');
 }
 
-  PurschaseList: IPurchase[] = []; 
+  PurschaseAprovedList: IPurchase[] = []; 
 
   constructor(private apiPuchasesService: PurchaseApiService) {}
 
   ngOnInit(): void {
-    this.apiPuchasesService.purchasesList$.subscribe((puchasesList) => {
-      this.PurschaseList = puchasesList;
-      console.log(puchasesList);
+    this.apiPuchasesService.purchasesAprovedList$.subscribe((puchasesAprovedList) => {
+      this.PurschaseAprovedList = puchasesAprovedList;
+      console.log(puchasesAprovedList);
     });
   }
 

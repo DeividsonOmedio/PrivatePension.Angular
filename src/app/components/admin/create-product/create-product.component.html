@@ -1,4 +1,4 @@
-<form [formGroup]="productForm" class="course-form">
+<form [formGroup]="productForm" class="course-form m-2 p-2">
     <div class="form-group">
         <label for="name">Nome</label>
         <input type="text" class="form-control" id="name" formControlName="name">
@@ -9,11 +9,14 @@
     </div>
     <div class="form-group">
         <label for="description">Descrição</label>
-        <input type="text" class="form-control" id="description" formControlName="description">
+            <textarea class="w-100 p-2" name="" id="" formControlName="description"></textarea>
     </div>
     <div class="form-group">
         <label for="avaliable">Status</label>
-        <input type="text" class="form-control" id="avaliable" formControlName="avaliable">
+        <select name="avaliable" id="avaliable" formControlName="available">
+            <option value="true">Disponível</option>
+            <option value="false">Indisponível</option>
+        </select>
     </div>
-    <button type="submit" class="btn btn-primary" (click)="submitForm()">Cadastrar</button>
+    <button type="submit" class="btn btn-primary" (click)="submitForm()">{{ btnSubmit }}</button>
   </form>

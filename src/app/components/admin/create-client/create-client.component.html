@@ -1,7 +1,7 @@
-<form [formGroup]="userForm" class="course-form">
+<form [formGroup]="userForm" class="course-form m-2 p2">
     <div class="form-group">
         <label for="name">Nome</label>
-        <input type="text" class="form-control" id="name" formControlName="name">
+        <input type="text" class="form-control" id="name" formControlName="userName">
     </div>
     <div class="form-group">
         <label for="email">E-mail</label>
@@ -11,9 +11,16 @@
         <label for="password">Senha</label>
         <input type="text" class="form-control" id="password" formControlName="password">
     </div>
-    <div class="form-group">
+    <div id="divWalletBalance" class="form-group">
+        <label for="number">Carteira</label>
+        <input type="text" class="form-control" id="walletBalance" formControlName="walletBalance">
+    </div>
+    <div id="divRole" class="form-group">
         <label for="role">Função</label>
-        <input type="number" step="1" minlength="0" maxlength="1" class="form-control" id="role" formControlName="role">
+        <select name="role" id="role" formControlName="role">
+            <option value="0">Cliente</option>
+            <option value="1">Admin</option>
+        </select>
     </div>
     <button type="submit" class="btn btn-primary" (click)="submitForm()">Cadastrar</button>
   </form>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IUser } from '../../../models/user';
 import { UserApiService } from '../../../services/user-api.service';
@@ -16,19 +16,19 @@ export class UsersComponent implements OnInit {
   adminList$: Observable<IUser[]> = new Observable<IUser[]>();
   clientList$: Observable<IUser[]> = new Observable<IUser[]>();
 
-  constructor(private apiUserService: UserApiService) {}
+  constructor(private apiUserService: UserApiService, private route: Router) {}
 
   ngOnInit(): void {
     this.adminList$ = this.apiUserService.getAdmins();
     this.clientList$ = this.apiUserService.getClients();
   }
 
-  Delete() {
+  Delete(id: number | undefined) {
     throw new Error('Method not implemented.');
   }
 
-  Edit() {
-    throw new Error('Method not implemented.');
+  Edit(id: number | undefined) {
+    this.route.navigate(['/admin/manageuser/edit', id]);
   }
 
   insertInWallet() {

@@ -1,4 +1,6 @@
 <h2>Administradores</h2>
+<a  routerLink="/admin/manageuser/create">adicionar produto</a>
+
 <div *ngIf="adminList$ | async as adminList; else noAdmins">
   <table class="table">
     <thead>
@@ -21,8 +23,8 @@
         <td>{{ item.role ? 'Admin' : 'Cliente' }}</td>
         <td>{{ item.walletBalance !== null ? item.walletBalance : 'N/A' }}</td>
         <td><button (click)="insertInWallet()">Depositar</button></td>
-        <td><button (click)="Edit()">Editar</button></td>
-        <td><button (click)="Delete()">Cancelar</button></td>
+        <td><button (click)="Edit(item.id)">Editar</button></td>
+        <td><button (click)="Delete(item.id)">Cancelar</button></td>
       </tr>
     </tbody>
   </table>
@@ -56,8 +58,8 @@
         <td>{{ item.role ? 'Admin' : 'Cliente' }}</td>
         <td>{{ item.walletBalance !== null ? item.walletBalance : 'N/A' }}</td>
         <td><button (click)="insertInWallet()">Depositar</button></td>
-        <td><button (click)="Edit()">Editar</button></td>
-        <td><button (click)="Delete()">Cancelar</button></td>
+        <td><button (click)="Edit(item.id)">Editar</button></td>
+        <td><button (click)="Delete(item.id)">Cancelar</button></td>
       </tr>
     </tbody>
   </table>
