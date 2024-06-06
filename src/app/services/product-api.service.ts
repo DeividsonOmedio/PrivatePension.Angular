@@ -3,31 +3,33 @@ import { BehaviorSubject } from 'rxjs';
 import { IProduct } from '../models/product';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
+import { API_URLS } from '../app.config'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductApiService {
-  private readonly API_URL_PRODUCTS = 'http://localhost:5041/api/Product';
+  private readonly API_URL_PRODUCTS = API_URLS.PRODUCT_API;
   private productsSubject = new BehaviorSubject<IProduct[]>([]);
   public productsList$ = this.productsSubject.asObservable();
 
   private forSalesSubject = new BehaviorSubject<IProduct[]>([]);
   public forSalesList$ = this.forSalesSubject.asObservable();
 
-  private token: string | null;
+  private token: string | null = null;
 
   constructor(private http: HttpClient) {
     this.token = sessionStorage.getItem('token');
     //this.getAllProducts();
-    this.token = sessionStorage.getItem('token');
     if (this.token){
-      const token = this.decodeToken(this.token);
-      console.log(token.nameid);
-      this.getProductsForSale(token.nameid);
+        this.Initialize();
     }
   }
-
+  Initialize(){
+    const token = this.decodeToken(this.token);
+    console.log(token.nameid);
+    this.getProductsForSale(token.nameid);
+  }
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
       'Content-Type': 'application/json',
@@ -49,7 +51,7 @@ export class ProductApiService {
 
   getProductsForSale(id: number) {
     const headers = this.getHeaders();
-    this.http.get<IProduct[]>(`${this.API_URL_PRODUCTS}/GetProductsPurchasedByUser?userId=${id}`, { headers }).subscribe(
+    this.http.get<IProduct[]>(`${this.API_URL_PRODUCTS}/GetProductsNotPurchasedByUser?userId=${id}`, { headers }).subscribe(
       (products: IProduct[]) => {
         this.forSalesSubject.next(products);
       },
@@ -66,14 +68,22 @@ export class ProductApiService {
 
   addProduct(product: IProduct) {
     const headers = this.getHeaders();
-    return this.http.post<IProduct>(this.API_URL_PRODUCTS, product, { headers });
+    return this.http.post<IProduct>(this.API_URL_PRODUCTS, product, { headers })
+      .subscribe(
+        () => {
+          this.Initialize();
+        },
+        error => {
+          console.error('Error adding product', error);
+        }
+      );
   }
 
   updateProduct(product: IProduct) {
     const headers = this.getHeaders();
     return this.http.put<IProduct>(`${this.API_URL_PRODUCTS}/${product.id}`, product, { headers }).subscribe(
       () => {
-        this.getAllProducts();
+        this.Initialize();
       },
       error => {
         console.error('Error updating product', error);
@@ -83,12 +93,21 @@ export class ProductApiService {
 
   deleteProduct(productId: number) {
     const headers = this.getHeaders();
-    return this.http.delete<IProduct>(`${this.API_URL_PRODUCTS}/${productId}`, { headers });
+    return this.http.delete<IProduct>(`${this.API_URL_PRODUCTS}/${productId}`, { headers })
+      .subscribe(
+        () => {
+          this.Initialize();
+        },
+        error => {
+          console.error('Error deleting product', error);
+        }
+      );
   }
 
-  decodeToken(token: string): any {
+  decodeToken(token: string | null): any {
     try {
-      return jwtDecode(token);
+      if (token)
+        return jwtDecode(token);
     } catch (Error) {
       console.error('Error decoding token:', Error);
       return null;

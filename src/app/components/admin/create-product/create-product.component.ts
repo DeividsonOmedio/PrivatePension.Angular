@@ -37,8 +37,7 @@ export class CreateProductComponent implements OnInit{
     this.productForm.value.available = this.productForm.value.available === 'true' ? true : false;
     const response = this.apiProduvtService.updateProduct({ ...this.product, ...this.productForm.value });
   } else {
-    this.apiProduvtService.addProduct(this.productForm.value).subscribe(() => {
-    });
+    this.apiProduvtService.addProduct(this.productForm.value);
   }
   this.routes.navigate(['/admin/products']);
 }

@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { IPurchase } from '../models/purchase';
 import { IContribution } from '../models/contribution';
+import { API_URLS } from '../app.config'; 
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ import { IContribution } from '../models/contribution';
 export class ContributionApiService {
 
   private token: string | null;
-  private readonly API_URL_PURCHASE = 'http://localhost:5041/api/Contribution';
+  private readonly API_URL_PURCHASE = API_URLS.CONTRIBUTION_API;
   
   private contribuitionsSubject = new BehaviorSubject<IContribution[]>([]);
   public contribuitionsList$ = this.contribuitionsSubject.asObservable();

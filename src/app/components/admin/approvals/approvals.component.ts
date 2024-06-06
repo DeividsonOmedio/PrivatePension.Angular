@@ -17,12 +17,16 @@ export class ApprovalsComponent implements OnInit {
   constructor(private apiPurchaseService: PurchaseApiService) {}
 
   ngOnInit(): void {
+    this.apiPurchaseService.Initialize();
     this.apiPurchaseService.inApprovalsList$.subscribe((inAprrovals) => {
       this.InAprrovals = inAprrovals;
       console.log(inAprrovals);
     });
   }
-  Approve() {
-  throw new Error('Method not implemented.');
+  Approve(id: number | undefined) {
+    if (!id) 
+      return;
+
+    this.apiPurchaseService.approvePurchase(id);
   }
 }

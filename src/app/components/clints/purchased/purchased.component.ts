@@ -15,6 +15,7 @@ export class PurchasedComponent implements OnInit{
   
   constructor(private purchaseApiService: PurchaseApiService) {}
   ngOnInit(): void {
+    this.purchaseApiService.Initialize();
     this.purchaseApiService.purchasedsList$.subscribe((purchasedsList) => {
       this.purchasedList = purchasedsList;
       console.log(purchasedsList);   
@@ -22,9 +23,16 @@ export class PurchasedComponent implements OnInit{
   }
   
   calcel() {
-  throw new Error('Method not implemented.');
+    throw new Error('Method not implemented.');
   }
   contribution() {
-  throw new Error('Method not implemented.');
+    throw new Error('Method not implemented.');
+  }
+  CancelPurchase(id: number | undefined) {
+    console.log('Cancel purchase');
+    console.log(id);
+    if (id) {
+      this.purchaseApiService.deletePurchase(id);
+    }
   }
 }

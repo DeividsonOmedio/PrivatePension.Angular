@@ -20,7 +20,7 @@
                     <td>{{ item.productId }}</td>
                     <td>{{ item.purchaseDate | date: 'dd/MM/yyyy' }}</td>
                     <td>{{ item.isApproved }}</td>
-                    <td><button (onclick)="Approve()">Aprovar</button></td>
+                    <td><button (click)="Approve(item.id)">Aprovar</button></td>
                 </tr>
             }
         </tbody>

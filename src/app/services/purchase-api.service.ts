@@ -3,14 +3,16 @@ import { BehaviorSubject } from 'rxjs';
 import { IPurchase } from '../models/purchase';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
+import { API_URLS, appConfig } from '../app.config'; 
+import { ProductApiService } from './product-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PurchaseApiService {
 
-  private token: string | null;
-  private readonly API_URL_PURCHASE = 'http://localhost:5041/api/Purchase';
+  private token: string | null = null;
+  private readonly API_URL_PURCHASE = API_URLS.PURCHASE_API;
   
   private purchasesAprovedSubject = new BehaviorSubject<IPurchase[]>([]);
   public purchasesAprovedList$ = this.purchasesAprovedSubject.asObservable();
@@ -23,9 +25,14 @@ export class PurchaseApiService {
 
 
   constructor(private http: HttpClient) {
+    this.Initialize();
+  }
+
+  Initialize(){
     this.token = sessionStorage.getItem('token');
     if (this.token) { 
       const token = this.decodeToken(this.token);
+      console.log(token); 
       if (token.role === 'admin'){
         this.getAprovedPurchase();
         this.getInApprovals();
@@ -34,7 +41,6 @@ export class PurchaseApiService {
       }
     }
   }
-
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
       'Content-Type': 'application/json',
@@ -87,8 +93,7 @@ export class PurchaseApiService {
     const headers = this.getHeaders();
     this.http.put(`${this.API_URL_PURCHASE}/Approve/${purchaseId}`, {}, { headers }).subscribe(
       () => {
-        this.getAprovedPurchase();
-        this.getInApprovals();
+        this.Initialize();
       },
       error => {
         console.error('Error approving purchase', error);
@@ -96,15 +101,20 @@ export class PurchaseApiService {
     );
   }
 
-  addPurchase(purchase: IPurchase) {
+  addPurchase(purchase: IPurchase)  {
     const headers = this.getHeaders();
-    this.http.post(this.API_URL_PURCHASE, purchase, { headers }).subscribe(
+    return this.http.post<any>(this.API_URL_PURCHASE, purchase, { headers })
+    
+  }
+
+  approvePurchase(id: number) {
+    const headers = this.getHeaders();
+    this.http.patch(`${API_URLS.URL}/approve/${id}`, {}, { headers }).subscribe(
       () => {
-        this.getAprovedPurchase();
-        this.getInApprovals();
+        this.Initialize();
       },
       error => {
-        console.error('Error adding purchase', error);
+        console.error('Error updating purchase', error);
       }
     );
   }
@@ -113,8 +123,7 @@ export class PurchaseApiService {
     const headers = this.getHeaders();
     this.http.put(`${this.API_URL_PURCHASE}/${purchase.id}`, purchase, { headers }).subscribe(
       () => {
-        this.getAprovedPurchase();
-        this.getInApprovals();
+        this.Initialize();
       },
       error => {
         console.error('Error updating purchase', error);
@@ -126,8 +135,8 @@ export class PurchaseApiService {
     const headers = this.getHeaders();
     this.http.delete(`${this.API_URL_PURCHASE}/${purchaseId}`, { headers }).subscribe(
       () => {
-        this.getAprovedPurchase();
-        this.getInApprovals();
+        // this.prodctApiService.forSalesList$;
+        this.Initialize();
       },
       error => {
         console.error('Error deleting purchase', error);

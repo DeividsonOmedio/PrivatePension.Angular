@@ -4,13 +4,14 @@ import { BehaviorSubject, Observable, map } from 'rxjs';
 import { IProduct } from '../models/product';
 import { IUser } from '../models/user';
 import { jwtDecode } from 'jwt-decode';
+import { API_URLS } from '../app.config'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserApiService {
 
-  private readonly API_URL_USER = 'http://localhost:5041/api/User';
+  private readonly API_URL_USER = API_URLS.USER_API;
   private usersSubject = new BehaviorSubject<IUser[]>([]);
   public usersList$ = this.usersSubject.asObservable();
   private token: string | null;
@@ -75,7 +76,7 @@ export class UserApiService {
 
   updateUser(user: IUser) {
     const headers = this.getHeaders();
-    return this.http.put<IUser>(`${this.API_URL_USER}/${user.id}`, user, { headers }).subscribe(
+    return this.http.put<IUser>(`${this.API_URL_USER}`, user, { headers }).subscribe(
       () => {
         this.getAllUsers();
       },

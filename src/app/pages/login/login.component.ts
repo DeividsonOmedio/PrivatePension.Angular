@@ -18,6 +18,7 @@ throw new Error('Method not implemented.');
   userForm: FormGroup;
 
   constructor(private router: Router, private loginService: LoginApiService) { 
+    sessionStorage.removeItem('token');
     this.userForm = new FormGroup({
       email: new FormControl(),
       password: new FormControl(),

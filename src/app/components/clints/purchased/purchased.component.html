@@ -2,7 +2,6 @@
     <table class="table">
         <thead>
           <tr>
-            <th scope="col">CLIENTE</th>
             <th scope="col">PRODUTO</th>
             <th scope="col">DATA</th>
             <th scope="col">STATUS</th>
@@ -13,11 +12,15 @@
             <tbody>
                 @for (item of purchasedList; track item.id) {
                     <tr>
-                        <th scope="row">{{ item.id }}</th>
-                        <td>{{ item.clientId }}</td>
                         <td>{{ item.productId }}</td>
                         <td>{{  item.purchaseDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
                         <td>{{ item.isApproved ? 'Aprovado' : 'Pendente'}}</td>
+                        @if(!item.isApproved) {
+                            <td>
+                                <button type="button" class="btn btn-primary" (click)="CancelPurchase(item.id)">Cancelar Compra</button>
+                            </td>
+                        }
+                        
                     </tr>
                 }
             </tbody>
