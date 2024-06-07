@@ -2,8 +2,8 @@
 <a  routerLink="/admin/manageuser/create">adicionar produto</a>
 
 <div *ngIf="adminList$ | async as adminList; else noAdmins">
-  <table class="table">
-    <thead>
+  <table class="table p-3 border-3 table-striped">
+    <thead class="table-secondary">
       <tr>
         <th scope="col">ID</th>
         <th scope="col">CLIENTE</th>
@@ -37,8 +37,8 @@
 
 <h2>Clientes</h2>
 <div *ngIf="clientList$ | async as clientList; else noClients">
-  <table class="table">
-    <thead>
+  <table class="table p-3 border-3 table-striped">
+    <thead class="table-secondary">
       <tr>
         <th scope="col">ID</th>
         <th scope="col">CLIENTE</th>

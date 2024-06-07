@@ -27,6 +27,7 @@ export class ProductApiService {
   Initialize(){
     const token = this.decodeToken(this.token);
     if (token.role === 'admin'){
+      console.log('admin chegou');
       this.getAllProducts();
     } else if(token.role === 'client') {
       this.getProductsForSale(token.nameid);
@@ -51,6 +52,11 @@ export class ProductApiService {
     );
   }
 
+  getProductsPhurchasedByUser(id: number) {
+    const headers = this.getHeaders();
+    return this.http.get<IProduct[]>(`${this.API_URL_PRODUCTS}/GetProductsPurchasedByUser?userId=${id}`, { headers });
+  }
+  
   getProductsForSale(id: number) {
     const headers = this.getHeaders();
     this.http.get<IProduct[]>(`${this.API_URL_PRODUCTS}/GetProductsNotPurchasedByUser?userId=${id}`, { headers }).subscribe(

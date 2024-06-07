@@ -21,12 +21,10 @@ export class ContributionsComponent implements OnInit {
   
     
     ngOnInit(): void {
+      this.apiContribuitionsService.Initialize();
       this.apiContribuitionsService.contribuitionsList$.subscribe((contribuitions) => {
         this.ContribuitionList = contribuitions;
-        console.log(contribuitions);
+        this.ContribuitionListDto = this.apiContribuitionsService.converter(this.ContribuitionList);
       });
-      console.log(this.ContribuitionList);
-      this.ContribuitionListDto = this.apiContribuitionsService.converter(this.ContribuitionList);
-      console.log(this.ContribuitionListDto);
     }
   }

@@ -24,8 +24,10 @@ export class ApprovalsComponent implements OnInit {
     this.apiPurchaseService.inApprovalsList$.subscribe((inAprrovals) => {
       this.InAprrovals = inAprrovals;
       console.log(inAprrovals);
-      this.InAprrovalsDto = this.apiPurchaseService.converter(inAprrovals);
-      console.log(this.InAprrovalsDto);
+      this.apiPurchaseService.converter(this.InAprrovals).then((approvals) => {
+        this.InAprrovalsDto = approvals;
+        console.log(this.InAprrovalsDto);
+        });
     });
   }
   Approve(id: number | undefined) {

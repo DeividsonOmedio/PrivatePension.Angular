@@ -1,6 +1,6 @@
 
-@if (purchasedList && purchasedList.length > 0) {
-    @for (item of purchasedList; track item.id) {
+@if (purchasedListDto && purchasedListDto.length > 0) {
+@for (item of purchasedListDto; track item.id) {
     <table class="table">
       <thead class="table-secondary">
         <tr>
@@ -12,7 +12,7 @@
           </thead>
           <tbody>
           <tr>
-            <td colspan="2">{{ item.productId }}</td>
+            <td colspan="2">{{ item.productName }}</td>
             <td>{{ item.purchaseDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
             <td>{{ item.isApproved ? 'Aprovado' : 'Pendente' }}</td>
             @if (!item.isApproved) {
@@ -32,13 +32,11 @@
             <tr>
               <th>&nbsp;</th>
               <td rowspan="2"><small>Aporte:</small></td>
-              <th scope="col">Id</th>
               <th scope="col">Valor</th>
               <th scope="col">Data</th>
             </tr>
             <tr>
               <td>&nbsp;</td>
-              <td>{{ contribution.id }}</td>
               <td>{{ contribution.amount }}</td>
               <td>{{ contribution.contributionDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
             </tr>

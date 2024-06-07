@@ -37,7 +37,7 @@ export class ContributionApiService {
   Initialize(){
     const token = this.decoteToken(this.token);
     if (token.role === 'admin'){ 
-    this.getAllContribuitions();
+      this.getAllContribuitions();
     } else if(token.role === 'client') {
       this.getContribuitionByUser(token.nameid);
     }
@@ -47,7 +47,6 @@ export class ContributionApiService {
   }
 
   private getHeaders(): HttpHeaders {
-    console.log(this.token);
     return new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.token}`
@@ -109,27 +108,21 @@ export class ContributionApiService {
         amount: contribution.amount,
         contributionDate: contribution.contributionDate
       };
-      console.log(username)
       if (username) {
         contributionDto.clientName = username;
         
       } else {
         const purchase = this.purchaseApiService.getPurchaseById(contribution.purchaseId);
         purchase.subscribe((purchase) => {
-          console.log(purchase);
           this.userApiService.getUserById(purchase.clientId).subscribe((user) => {
             contributionDto.clientName = user.userName;
-            console.log(user);
             this.productApiService.getProductById(purchase.productId).subscribe((product) => {
               contributionDto.productName = product.name;
-              console.log(product);
             });
           });
         });
       }
-  
       this.contributions.push(contributionDto);
-      console.log(this.contributions);
     });
   
     return this.contributions;

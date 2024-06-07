@@ -1,13 +1,14 @@
 <a  routerLink="/admin/manageproduct/create">adicionar produto</a>
 @if (productsList && productsList.length > 0) {
-    <table class="table">
-        <thead>
+    <table class="table p-3 border-3 table-striped">
+        <thead class="table-secondary">
           <tr>
             <th scope="col">ID</th>
             <th scope="col">Nome</th>
             <th scope="col">Preço</th>
             <th scope="col">Descrição</th>
             <th scope="col">STATUS</th>
+            <th scope="col">&nbsp;</th>
             <th scope="col">&nbsp;</th>
           </tr>
         </thead>

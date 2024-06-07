@@ -3,10 +3,11 @@ import { BehaviorSubject } from 'rxjs';
 import { IPurchase } from '../models/purchase';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
-import { API_URLS, appConfig } from '../app.config'; 
+import { API_URLS } from '../app.config'; 
 import { ProductApiService } from './product-api.service';
 import { IPurchaseDto } from '../dtos/purchaseDto';
 import { UserApiService } from './user-api.service';
+import { IProduct } from '../models/product';
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +25,12 @@ export class PurchaseApiService {
 
   private inApprovalsSubject = new BehaviorSubject<IPurchase[]>([]);
   public inApprovalsList$ = this.inApprovalsSubject.asObservable();
+  
+  private ProductsListPurchasedSubject = new BehaviorSubject<IProduct[]>([]);
+  public ProductsListPurchasedList$ = this.ProductsListPurchasedSubject.asObservable();
 
   Approvals: IPurchaseDto[] = [];
+  ProductsListPurchased: IProduct[] = [];
 
   constructor(private http: HttpClient, private userApiService: UserApiService, private productApiService: ProductApiService) {
     this.Initialize();
@@ -35,15 +40,17 @@ export class PurchaseApiService {
     this.token = sessionStorage.getItem('token');
     if (this.token) { 
       const token = this.decodeToken(this.token);
-      console.log(token); 
+      console.log(token.role); 
       if (token.role === 'admin'){
-        this.getAprovedPurchase();
         this.getInApprovals();
+        this.getAprovedPurchase();
       } else if(token.role === 'client') {
         this.getPurchaseByClient(token.nameid);
+        this.getProductsPhurchasedByUser(token.nameid);
       }
     }
   }
+  
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
       'Content-Type': 'application/json',
@@ -62,6 +69,7 @@ export class PurchaseApiService {
       }
     );
   }
+
   getInApprovals() {
     const headers = this.getHeaders();
     this.http.get<IPurchase[]>(`${this.API_URL_PURCHASE}/GetByApproved/notApproved/`, { headers }).subscribe(
@@ -106,8 +114,7 @@ export class PurchaseApiService {
 
   addPurchase(purchase: IPurchase)  {
     const headers = this.getHeaders();
-    return this.http.post<any>(this.API_URL_PURCHASE, purchase, { headers })
-    
+    return this.http.post<any>(this.API_URL_PURCHASE, purchase, { headers });
   }
 
   approvePurchase(id: number) {
@@ -138,8 +145,7 @@ export class PurchaseApiService {
     const headers = this.getHeaders();
     this.http.delete(`${this.API_URL_PURCHASE}/${purchaseId}`, { headers }).subscribe(
       () => {
-        // this.prodctApiService.forSalesList$;
-        this.Initialize();
+        // this.Initialize();
       },
       error => {
         console.error('Error deleting purchase', error);
@@ -147,28 +153,81 @@ export class PurchaseApiService {
     );
   }
 
-  converter(approvalList: IPurchase[]) {
-  approvalList.forEach((approval) => {
-      if (!approval.id) return; 
-      let purchaseDto: IPurchaseDto = {
-        id: approval.id,
-        clientName: '',
-        productName: '',
-        purchaseDate: approval.purchaseDate, 
-        isApproved: approval.isApproved 
-      };
-      this.userApiService.getUserById(approval.id).subscribe((user) => {
-        purchaseDto.clientName = user.userName;
-        this.productApiService.getProductById(approval.productId).subscribe((productName) => {
+  converter(purchasedList: IPurchase[], userName: string | null = null): Promise<IPurchaseDto[]> {
+    if (userName === 'user')
+    this.Approvals = [];
+  
+  const promises = purchasedList.map(async (purchased) => {
+    if (!purchased.id) return;
+  let purchaseDto: IPurchaseDto = {
+    id: purchased.id,
+  clientName: '',
+          productName: '',
+          purchaseDate: purchased.purchaseDate,
+          isApproved: purchased.isApproved
+        };
+    
+        if (userName === 'user') {
+          const products = await this.productApiService.getProductsPhurchasedByUser(purchased.productId).toPromise();
+          if (!products) return;
+          const product = products.find(product => product.id === purchased.productId);
+          if (product) {
+            purchaseDto.productName = product.name;
+            console.log(product.id, purchased.productId);
+          }
+        } else {
+          const user = await this.userApiService.getUserById(purchased.id).toPromise();
+          if (!user) return;
+          purchaseDto.clientName = user.userName;
+          const productName = await this.productApiService.getProductById(purchased.productId).toPromise();
+          if (!productName) return;
           purchaseDto.productName = productName.name;
-
+          console.log(purchaseDto);
+        }
+    
+        this.Approvals.push(purchaseDto);
       });
+    
+    return Promise.all(promises).then(() => this.Approvals);
+    }
+   
+  
 
-      this.Approvals.push(purchaseDto);
+  async converterSingleProduct(purchased: IPurchase, purchasedListUser: IProduct[]): Promise<IPurchaseDto | null> {
+    if (!purchased.id) return null;
+    console.log(purchased);
+    let purchaseDto: IPurchaseDto = {
+      id: purchased.id,
+      clientName: '',
+      productName: '',
+      purchaseDate: purchased.purchaseDate,
+      isApproved: purchased.isApproved
+    };
+
+    console.log(purchased.productId);
+    console.log(purchasedListUser);
+    purchasedListUser.forEach(product => {
+      if (product.id === purchased.productId) {
+        purchaseDto.productName = product.name;
+        console.log(product.id, purchased.productId);
+      }
     });
-      });
-      console.log(this.Approvals);
-      return this.Approvals;
+
+    return purchaseDto;
+  }
+
+  getProductsPhurchasedByUser(userId: number) {
+    this.productApiService.getProductsPhurchasedByUser(userId).subscribe(
+      (products: IProduct[]) => {
+        this.ProductsListPurchased = products;
+        this.ProductsListPurchasedSubject.next(products);
+        console.log(this.ProductsListPurchasedList$);
+      },
+      error => {
+        console.error('Error fetching products', error);
+      }
+    );
+    return this.ProductsListPurchased;
   }
 
   decodeToken(token: string): any {

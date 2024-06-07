@@ -12,6 +12,6 @@ export class HeaderComponent {
   constructor(private router: Router) { }
   logout() {
     sessionStorage.removeItem('token');
-    this.router.navigate(['/login']);
+    window.location.href = '/login';
   }
 }

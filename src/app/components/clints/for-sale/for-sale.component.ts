@@ -48,6 +48,7 @@ export class ForSaleComponent implements OnInit{
       error: err => {
         console.error('Erro ao adicionar compra', err);
         // Recarrega a página ou inicializa os dados mesmo após erro
+        this.purchaseApiService.Initialize();
         this.reloadPageOrData();
       },
       complete: () => {

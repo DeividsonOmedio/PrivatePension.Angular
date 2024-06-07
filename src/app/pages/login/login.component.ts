@@ -28,7 +28,6 @@ throw new Error('Method not implemented.');
 
   submitForm() {
     const user: IUser = this.userForm.value;
-    console.log(user);
 
     this.loginService.login(user).subscribe(
       res => {

@@ -7,6 +7,7 @@ import { ContributionApiService } from '../../../services/contribution-api.servi
 import { IContribution } from '../../../models/contribution';
 import { IContributionDtos } from '../../../dtos/contributionDto';
 import { IPurchaseDto } from '../../../dtos/purchaseDto';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-purchased',
@@ -26,51 +27,68 @@ export class PurchasedComponent implements OnInit {
   contador: number[] = [];
   num: number = 0;
 
-  constructor(private purchaseApiService: PurchaseApiService, private contributionApiService: ContributionApiService) {}
+  constructor(private purchaseApiService: PurchaseApiService, private contributionApiService: ContributionApiService, private router: Router) {}
 
   ngOnInit(): void {
-    this.purchaseApiService.Initialize();
-    this.purchaseApiService.purchasedsList$.subscribe((purchasedsList) => {
-      this.purchasedList = purchasedsList;
-      console.log(purchasedsList);
-      this.purchasedListDto = this.purchaseApiService.converter(purchasedsList);
-      console.log(this.contributionsListDto);
-      });
-      
-      this.contributionApiService.contribuitionsListByUser$.subscribe((contribuitionsList) => {
-        this.contributionsList = contribuitionsList;
-        console.log(contribuitionsList);
-        this.contributionsListDto = this.contributionApiService.converter(this.contributionsList);
-    });
-    }
+    this.purchasedListDto = [];
+    this.purchaseApiService.purchasedsList$.subscribe(async (purchasedsList) => {
+      for (const purchase of purchasedsList) {
+        this.purchaseApiService.ProductsListPurchasedList$.subscribe(
+          async (ProductsListPurchased) => {
+            console.log(ProductsListPurchased);
+          console.log(ProductsListPurchased);
   
+          const purchaseDto = await this.purchaseApiService.converterSingleProduct(purchase, ProductsListPurchased);
+        if (purchaseDto) {
+          this.purchasedListDto.push(purchaseDto);
+          }
+
+          })
+        console.log(this.purchasedListDto);
+            }})
+
+
+      
+      
+    this.contributionApiService.contribuitionsListByUser$.subscribe((contribuitionsList) => {
+      this.contributionsList = contribuitionsList;
+      this.contributionsListDto = this.contributionApiService.converter(this.contributionsList);
+      console.log(this.contributionsListDto);
+    });
+  }
 
   CancelPurchase(id: number | undefined) {
-    console.log('Cancel purchase');
-    console.log(id);
     if (id) {
       this.purchaseApiService.deletePurchase(id);
-      }
+      this.reloadComponent();
     }
-  
-  ContributionInPurchase(idPurchase: number|undefined) {
-    console.log('Contribution in purchase');
-    console.log(idPurchase);
+  }
+
+  ContributionInPurchase(idPurchase: number | undefined) {
     if (idPurchase) {
       this.IdPurchase = idPurchase;
-      }
+    }
   }
-      
-      onAmountChange(amount: number) {
-        this.amount = amount;
-        console.log('Amount changed:', this.amount);
-        const contribution: IContribution = {
-          amount: this.amount,
-          contributionDate : new Date().toISOString(),
-          purchaseId: this.IdPurchase
-          };
-        this.contributionApiService.addContribuition(contribution)
-        
+
+  onAmountChange(amount: number) {
+    this.amount = amount;
+    console.log('Amount changed:', this.amount);
+    const contribution: IContribution = {
+      amount: this.amount,
+      contributionDate: new Date().toISOString(),
+      purchaseId: this.IdPurchase
+    };
+    this.contributionApiService.addContribuition(contribution);
+  }
+
+  reloadComponent(): void {
+    this.router.navigate(['/client/purchased']);
+    // this.router.navigateByUrl('/client/purchased', { skipLocationChange: true }).then(() => {
+    //   this.router.navigate(['/client/purchased']);
+    // });
+    // this.router.navigateByUrl('/refresh', { skipLocationChange: true }).then(() => {
+    //   this.router.navigate([this.router.url]);
+    // });
+    // this.ngOnInit();
   }
 }
-

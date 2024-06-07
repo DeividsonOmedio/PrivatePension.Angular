@@ -25,8 +25,11 @@ throw new Error('Method not implemented.');
     this.apiPuchasesService.purchasesAprovedList$.subscribe((puchasesAprovedList) => {
       this.PurschaseAprovedList = puchasesAprovedList;
       console.log(puchasesAprovedList);
-      this.PurschaseAprovedListDto = this.apiPuchasesService.converter(puchasesAprovedList);
-    });
+      this.apiPuchasesService.converter(this.PurschaseAprovedList).then((approvals) => {
+        this.PurschaseAprovedListDto = approvals;
+        console.log(this.PurschaseAprovedListDto);
+        });
+          });
   }
 
 

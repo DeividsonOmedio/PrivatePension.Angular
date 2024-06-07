@@ -9,8 +9,10 @@ import { CreateProductComponent } from './components/admin/create-product/create
 import { CreateClientComponent } from './components/admin/create-client/create-client.component';
 import { UsersComponent } from './components/admin/users/users.component';
 import { DashboardAdminComponent } from './components/admin/dashboard-admin/dashboard-admin.component';
+import { ReloadComponent } from './components/shared/reload/reload.component';
 
 export const routes: Routes = [
+    { path: 'refresh', component: ReloadComponent },
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
     { 
