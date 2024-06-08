@@ -14,7 +14,7 @@
                 @if(item.available) {
                     <tr>
                         <td>{{ item.name }}</td>
-                        <td>{{ item.price }}</td>
+                        <td>{{ item.price | currency: 'BRL' }}</td>
                         <td>{{ item.description }}</td>
                             <td>Disponível</td>
                         <td><button (click)="purchase(item.id)" data-bs-toggle="modal" data-bs-target="#exampleModal">Comprar</button></td>

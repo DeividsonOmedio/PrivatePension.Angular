@@ -1,5 +1,5 @@
-@if (InAprrovalsDto && InAprrovals.length > 0) {
-    <h2 class="mb-3 mt-5 ms-2">Aprovações</h2>
+@if (InApprovalsDto && InApprovalsDto.length > 0) {
+<h2 class="m-5 ps-3 mb-2">Aprovações</h2>
 
     <table class="table p-3 border-3 table-striped">
         <thead class="table-secondary">
@@ -13,13 +13,13 @@
           </tr>
         </thead>
         <tbody>
-            @for (item of InAprrovalsDto; track item.id) {
+            @for (item of InApprovalsDto; track item.id) {
                 <tr>
                     <th scope="row">{{ item.id }}</th>
                     <td>{{ item.clientName }}</td>
                     <td>{{ (item.productName).substring(0, 35) }}</td>
-                    <td>{{ item.purchaseDate | date: 'dd/MM/yyyy' }}</td>
-                    <td>{{ item.isApproved }}</td>
+                    <td>{{ item.purchaseDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
+                    <td>{{ item.isApproved ? 'Aprovado' : 'Pendente'}}</td>
                     <td><button (click)="Approve(item.id)">Aprovar</button></td>
                 </tr>
             }

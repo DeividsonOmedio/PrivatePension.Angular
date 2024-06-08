@@ -1,6 +1,8 @@
-<h2>Administradores</h2>
-<a  routerLink="/admin/manageuser/create">adicionar produto</a>
+<div class="d-flex justify-content-end mt-3 pe-5">
+  <a routerLink="/admin/manageuser/create" class="btn btn-success">Adicionar Usuário</a>
+</div>
 
+<h2 class="m-5 mt-0 ps-3 mb-2">Administradores</h2>
 <div *ngIf="adminList$ | async as adminList; else noAdmins">
   <table class="table p-3 border-3 table-striped">
     <thead class="table-secondary">
@@ -9,8 +11,6 @@
         <th scope="col">CLIENTE</th>
         <th scope="col">EMAIL</th>
         <th scope="col">FUNÇÃO</th>
-        <th scope="col">SALDO</th>
-        <th scope="col">&nbsp;</th>
         <th scope="col">&nbsp;</th>
         <th scope="col">&nbsp;</th>
       </tr>
@@ -21,10 +21,8 @@
         <td>{{ item.userName }}</td>
         <td>{{ item.email }}</td>
         <td>{{ item.role ? 'Admin' : 'Cliente' }}</td>
-        <td>{{ item.walletBalance !== null ? item.walletBalance : 'N/A' }}</td>
-        <td><button (click)="insertInWallet()">Depositar</button></td>
-        <td><button (click)="Edit(item.id)">Editar</button></td>
-        <td><button (click)="Delete(item.id)">Cancelar</button></td>
+        <td><button (click)="Edit(item.id)" class="btn btn-secondary">Editar</button></td>
+        <td><button (click)="Delete(item.id)" class="btn btn-danger">Deletar</button></td>
       </tr>
     </tbody>
   </table>
@@ -35,7 +33,7 @@
   </div>
 </ng-template>
 
-<h2>Clientes</h2>
+<h2 class="m-5 ps-3 mb-2">Clientes</h2>
 <div *ngIf="clientList$ | async as clientList; else noClients">
   <table class="table p-3 border-3 table-striped">
     <thead class="table-secondary">
@@ -57,9 +55,9 @@
         <td>{{ item.email }}</td>
         <td>{{ item.role ? 'Admin' : 'Cliente' }}</td>
         <td>{{ item.walletBalance !== null ? item.walletBalance : 'N/A' }}</td>
-        <td><button (click)="insertInWallet()">Depositar</button></td>
-        <td><button (click)="Edit(item.id)">Editar</button></td>
-        <td><button (click)="Delete(item.id)">Cancelar</button></td>
+        <td><button (click)="OpenModal(item)" class="btn btn-success">Depositar</button></td>
+        <td><button (click)="Edit(item.id)" class="btn btn-secondary">Editar</button></td>
+        <td><button (click)="Delete(item.id)" class="btn btn-danger">Deletar</button></td>
       </tr>
     </tbody>
   </table>
@@ -69,3 +67,12 @@
     Não há clientes.
   </div>
 </ng-template>
+<span id="spnvalueDeposit">
+  <div>
+    <label for="valueDeposit">Valor do depósito</label>
+    <label for="user">{{user?.userName}}</label>
+    <input type="number" name="valueDeposit" id="valueDeposit" (input)="AmountDeposit =$any($event.target).value">
+    <button class="btn btn-success ms-1" (click)="insertInWallet()">Confirma</button>
+    <button class="btn btn-secondary ms-1" (click)="ClosedModal()">Voltar</button>
+  </div>
+</span>

@@ -7,7 +7,7 @@
         </div>
         <div class="modal-body">
             @if (!Delete){
-                <label for="valor">Valor: $</label>
+                <label for="valor">Valor: R$</label>
                 <input class=" mx-1 px-2" type="number" name="valor" id="valor" placeholder="Insira o valor" (input)="onAmountInput($event)">
             } @else {
                 <p>Tem certeza que deseja excluir?</p>

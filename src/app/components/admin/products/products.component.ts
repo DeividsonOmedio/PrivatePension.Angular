@@ -21,13 +21,13 @@ export class ProductsComponent implements OnInit {
     this.apiProductService.Initialize();
     this.apiProductService.productsList$.subscribe((productsList) => {
       this.productsList = productsList;
-      console.log(productsList);
     });
   }
 
-  Delete() {
-    console.log("delete")
-    throw new Error('Method not implemented.');
+  Delete(id: number | undefined) {
+    const confirm = window.confirm('Confirma a exclusão do produto?');
+    if (id && confirm)
+      this.apiProductService.deleteProduct(id);
   }
 
   Edit(id: number | undefined) {

@@ -57,7 +57,7 @@ export class ContributionApiService {
     const headers = this.getHeaders();
     this.http.get<IContribution[]>(this.API_URL_PURCHASE, { headers }).subscribe(
       (contribuitions: IContribution[]) => {
-        console.log(contribuitions);
+        (contribuitions);
         this.contribuitionsSubject.next(contribuitions);
       },
       error => {
@@ -89,8 +89,11 @@ export class ContributionApiService {
       () => {
         this.Initialize();
       },
-      error => {
-        console.error('Error fetching products', error);
+      err => {
+        console.error('Error fetching products', err);
+        console.error('Erro ao adicionar compra', err);
+        if (err.error == "Insufficient funds")
+          alert('Saldo insuficiente');
       }
     );
 

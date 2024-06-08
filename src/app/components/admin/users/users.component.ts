@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IUser } from '../../../models/user';
@@ -15,6 +15,8 @@ import { Observable } from 'rxjs';
 export class UsersComponent implements OnInit {
   adminList$: Observable<IUser[]> = new Observable<IUser[]>();
   clientList$: Observable<IUser[]> = new Observable<IUser[]>();
+  user?: IUser;
+  @Input() AmountDeposit: number = 0;
 
   constructor(private apiUserService: UserApiService, private route: Router) {}
 
@@ -24,15 +26,31 @@ export class UsersComponent implements OnInit {
   }
 
   Delete(id: number | undefined) {
-    throw new Error('Method not implemented.');
+    const confirm = window.confirm('Confirma a exclusão do usuário?');
+    if (id && confirm)
+      this.apiUserService.deleteUser(id);
   }
 
   Edit(id: number | undefined) {
     this.route.navigate(['/admin/manageuser/edit', id]);
   }
+  OpenModal(user: IUser) {
+    this.user = user;
+    const modal = document.getElementById('spnvalueDeposit')
+    if (modal)
+      modal.style.display = 'flex';
+  }
+  ClosedModal() {
+    const modal = document.getElementById('spnvalueDeposit')
+    if (modal)
+      modal.style.display = 'none';
+  }
 
   insertInWallet() {
-    throw new Error('Method not implemented.');
+    const id = this.user?.id;
+    if (id)
+      this.apiUserService.insertInWallet(id, this.AmountDeposit);
+    this.ClosedModal();
   }
 
   trackById(index: number, item: IUser): number {

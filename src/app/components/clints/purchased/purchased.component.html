@@ -1,6 +1,5 @@
-
 @if (purchasedListDto && purchasedListDto.length > 0) {
-@for (item of purchasedListDto; track item.id) {
+  @for (item of purchasedListDto; track item.id) {
     <table class="table">
       <thead class="table-secondary">
         <tr>
@@ -8,9 +7,9 @@
           <th scope="col">DATA</th>
           <th scope="col">STATUS</th>
           <th colspan="2" scope="col">&nbsp;</th>
-          </tr>
-          </thead>
-          <tbody>
+        </tr>
+        </thead>
+        <tbody>
           <tr>
             <td colspan="2">{{ item.productName }}</td>
             <td>{{ item.purchaseDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
@@ -19,16 +18,16 @@
             <td>
               <button type="button" class="btn btn-primary" (click)="CancelPurchase(item.id)">Cancelar Compra</button>
             </td>
-            } @else {
+          } @else {
             <td>
               <button type="button" class="btn btn-primary" (click)="ContributionInPurchase(item.id)" data-bs-toggle="modal"
                 data-bs-target="#exampleModal">Realizar Aporte</button>
             </td>
-            }
-            <th>&nbsp;</th>
-            </tr>
-            @for (contribution of contributionsList; track contribution.id;){
-            @if (contribution.purchaseId === item.id) {
+          }
+          <th>&nbsp;</th>
+          </tr>
+          @for (contribution of contributionsList; track contribution.id;){
+          @if (contribution.purchaseId === item.id) {
             <tr>
               <th>&nbsp;</th>
               <td rowspan="2"><small>Aporte:</small></td>
@@ -37,19 +36,19 @@
             </tr>
             <tr>
               <td>&nbsp;</td>
-              <td>{{ contribution.amount }}</td>
+              <td>{{ contribution.amount | currency: 'BRL' }}</td>
               <td>{{ contribution.contributionDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
             </tr>
-            }
-    }
-  </tbody>
-</table>
-}
-  } @else {
-    <div class="alert alert-warning" role="alert">
-      Não há produtos comprados.
-    </div>
-    }
-    
-    <app-modal [Title]="'Aporte'" [BtnConfirm]="'Realizar Aporte'" (amountChange)="onAmountChange($event)">
-    </app-modal>
+          }
+          }
+          </tbody>
+          </table>
+          }
+          } @else {
+          <div class="alert alert-warning" role="alert">
+            Não há produtos comprados.
+          </div>
+          }
+          
+          <app-modal [Title]="'Aporte'" [BtnConfirm]="'Realizar Aporte'" (amountChange)="onAmountChange($event)">
+          </app-modal>

@@ -22,7 +22,6 @@ export class ModalComponent {
     }
     
     submit() {
-      console.log('Id:', this.Id);
       this.amountChange.emit(this.Amount);
   }
 }

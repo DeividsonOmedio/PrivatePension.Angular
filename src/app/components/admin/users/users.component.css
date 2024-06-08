@@ -1,0 +1,28 @@
+.table {
+    scale: .9;
+}
+
+#spnvalueDeposit {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(128, 128, 128, 0.384);
+}
+
+#spnvalueDeposit div {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}

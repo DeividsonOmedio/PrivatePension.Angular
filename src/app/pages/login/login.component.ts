@@ -31,14 +31,12 @@ throw new Error('Method not implemented.');
 
     this.loginService.login(user).subscribe(
       res => {
-        console.log('Login successful', res);
         const decodedToken = this.loginService.decodeToken(res.token);
-        console.log('Decoded token:', decodedToken);
         decodedToken.role === 'admin' ? this.router.navigate(['/admin']) : this.router.navigate(['/client']);
       },
       error => {
         console.error('Login failed', error);
-        alert('User not found');
+        alert('Usuario não encontrado ou url da api invalida!');
       }
     );
   }

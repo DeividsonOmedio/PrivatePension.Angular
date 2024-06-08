@@ -86,6 +86,18 @@ export class UserApiService {
     );
   }
 
+  insertInWallet(userId: number, amount: number) {
+    const headers = this.getHeaders();
+    return this.http.patch<IUser>(`${this.API_URL_USER}/UpdateWalletBalance/${userId}?value=${amount}`, {}, { headers }).subscribe(
+      () => {
+        this.getAllUsers();
+      },
+      error => {
+        console.error('Error updating wallet', error);
+      }
+    );
+  }
+
   deleteUser(userId: number){
     const headers = this.getHeaders();
     return this.http.delete<IUser>(`${this.API_URL_USER}/${userId}`, { headers }).subscribe(

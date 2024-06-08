@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { IPurchase } from '../models/purchase';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -12,7 +12,7 @@ import { IProduct } from '../models/product';
 @Injectable({
   providedIn: 'root'
 })
-export class PurchaseApiService {
+export class PurchaseApiService implements OnInit{
 
   private token: string | null = null;
   private readonly API_URL_PURCHASE = API_URLS.PURCHASE_API;
@@ -35,12 +35,15 @@ export class PurchaseApiService {
   constructor(private http: HttpClient, private userApiService: UserApiService, private productApiService: ProductApiService) {
     this.Initialize();
   }
+  ngOnInit(): void {
+    throw new Error('Method not implemented.');
+  }
 
   Initialize(){
     this.token = sessionStorage.getItem('token');
     if (this.token) { 
       const token = this.decodeToken(this.token);
-      console.log(token.role); 
+      (token.role); 
       if (token.role === 'admin'){
         this.getInApprovals();
         this.getAprovedPurchase();
@@ -74,6 +77,7 @@ export class PurchaseApiService {
     const headers = this.getHeaders();
     this.http.get<IPurchase[]>(`${this.API_URL_PURCHASE}/GetByApproved/notApproved/`, { headers }).subscribe(
       (inApprovals: IPurchase[]) => {
+        (inApprovals);
         console.log(inApprovals);
         this.inApprovalsSubject.next(inApprovals);
       },
@@ -145,7 +149,8 @@ export class PurchaseApiService {
     const headers = this.getHeaders();
     this.http.delete(`${this.API_URL_PURCHASE}/${purchaseId}`, { headers }).subscribe(
       () => {
-        // this.Initialize();
+        const updatedPurchases = this.purchasedsSubject.getValue().filter(purchase => purchase.id !== purchaseId);
+        this.purchasedsSubject.next(updatedPurchases);
       },
       error => {
         console.error('Error deleting purchase', error);
@@ -153,49 +158,45 @@ export class PurchaseApiService {
     );
   }
 
-  converter(purchasedList: IPurchase[], userName: string | null = null): Promise<IPurchaseDto[]> {
-    if (userName === 'user')
+  async converter(purchasedList: IPurchase[]): Promise<IPurchaseDto[]> {
+
+    const idSet = new Set<number>();
     this.Approvals = [];
+    const promises = purchasedList.map(async (purchased) => {
+      console.log(purchased);
+      if (!purchased.id || idSet.has(purchased.id)) return;
+      idSet.add(purchased.id);  
+      let purchaseDto: IPurchaseDto = {
+        id: purchased.id,
+        clientName: '',
+        productName: '',
+        purchaseDate: purchased.purchaseDate,
+        isApproved: purchased.isApproved
+      };
   
-  const promises = purchasedList.map(async (purchased) => {
-    if (!purchased.id) return;
-  let purchaseDto: IPurchaseDto = {
-    id: purchased.id,
-  clientName: '',
-          productName: '',
-          purchaseDate: purchased.purchaseDate,
-          isApproved: purchased.isApproved
-        };
-    
-        if (userName === 'user') {
-          const products = await this.productApiService.getProductsPhurchasedByUser(purchased.productId).toPromise();
-          if (!products) return;
-          const product = products.find(product => product.id === purchased.productId);
-          if (product) {
-            purchaseDto.productName = product.name;
-            console.log(product.id, purchased.productId);
-          }
-        } else {
-          const user = await this.userApiService.getUserById(purchased.id).toPromise();
-          if (!user) return;
+      try {
+        const user = await this.userApiService.getUserById(purchased.clientId).toPromise();
+        if (user) {
           purchaseDto.clientName = user.userName;
-          const productName = await this.productApiService.getProductById(purchased.productId).toPromise();
-          if (!productName) return;
-          purchaseDto.productName = productName.name;
-          console.log(purchaseDto);
         }
-    
-        this.Approvals.push(purchaseDto);
-      });
-    
-    return Promise.all(promises).then(() => this.Approvals);
-    }
-   
   
+        const product = await this.productApiService.getProductById(purchased.productId).toPromise();
+        if (product) {
+          purchaseDto.productName = product.name;
+        }
+  
+        this.Approvals.push(purchaseDto);
+      } catch (error) {
+        console.error('Error fetching user or product', error);
+      }
+    });
+  
+    return Promise.all(promises).then(() => this.Approvals);
+  }
 
   async converterSingleProduct(purchased: IPurchase, purchasedListUser: IProduct[]): Promise<IPurchaseDto | null> {
     if (!purchased.id) return null;
-    console.log(purchased);
+    (purchased);
     let purchaseDto: IPurchaseDto = {
       id: purchased.id,
       clientName: '',
@@ -204,12 +205,10 @@ export class PurchaseApiService {
       isApproved: purchased.isApproved
     };
 
-    console.log(purchased.productId);
-    console.log(purchasedListUser);
     purchasedListUser.forEach(product => {
       if (product.id === purchased.productId) {
         purchaseDto.productName = product.name;
-        console.log(product.id, purchased.productId);
+        (product.id, purchased.productId);
       }
     });
 
@@ -221,7 +220,6 @@ export class PurchaseApiService {
       (products: IProduct[]) => {
         this.ProductsListPurchased = products;
         this.ProductsListPurchasedSubject.next(products);
-        console.log(this.ProductsListPurchasedList$);
       },
       error => {
         console.error('Error fetching products', error);

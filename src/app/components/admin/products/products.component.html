@@ -1,5 +1,8 @@
-<a  routerLink="/admin/manageproduct/create">adicionar produto</a>
+<div class="d-flex justify-content-end mt-3 pe-5">
+    <a routerLink="/admin/manageproduct/create" class="btn btn-success">Adicionar Produto</a>
+</div>
 @if (productsList && productsList.length > 0) {
+    <h2 class="m-5 mt-0 ps-3 mb-2">Produtos</h2>
     <table class="table p-3 border-3 table-striped">
         <thead class="table-secondary">
           <tr>
@@ -17,11 +20,11 @@
                 <tr>
                     <th scope="row">{{ item.id }}</th>
                     <td>{{ item.name }}</td>
-                    <td>{{ item.price }}</td>
+                    <td>{{ item.price | currency: 'BRL' }}</td>
                     <td>{{ item.description }}</td>
                     <td>{{ item.available ? 'Disponível' : 'Indisponível' }}</td>
                     <td><button (click)="Edit(item.id)">Editar</button></td>
-                    <td><button (click)="Delete()">Deletar</button></td>
+                    <td><button (click)="Delete(item.id)">Deletar</button></td>
                 </tr>
             }
         </tbody>

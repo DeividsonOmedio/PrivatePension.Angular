@@ -10,7 +10,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient()
   ],
 };
-const BASE_URL = 'https://localhost:7109';
+const BASE_URL = 'http://localhost:5041';
 
 export const API_URLS = {
     URL: BASE_URL,

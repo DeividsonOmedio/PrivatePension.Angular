@@ -9,7 +9,7 @@ import { Router, RouterModule } from '@angular/router';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-  constructor(private router: Router) { }
+  constructor() { }
   logout() {
     sessionStorage.removeItem('token');
     window.location.href = '/login';

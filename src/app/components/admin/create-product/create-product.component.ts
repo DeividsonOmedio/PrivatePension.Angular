@@ -33,10 +33,11 @@ export class CreateProductComponent implements OnInit{
     });
   }
   submitForm() {
-    if (this.product) {
     this.productForm.value.available = this.productForm.value.available === 'true' ? true : false;
-    const response = this.apiProduvtService.updateProduct({ ...this.product, ...this.productForm.value });
-  } else {
+    if (this.product) {
+      const response = this.apiProduvtService.updateProduct({ ...this.product, ...this.productForm.value });
+    } else {
+    console.log(this.productForm.value);
     this.apiProduvtService.addProduct(this.productForm.value);
   }
   this.routes.navigate(['/admin/products']);

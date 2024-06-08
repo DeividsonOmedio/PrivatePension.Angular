@@ -1,24 +1,24 @@
-<form [formGroup]="userForm" class="course-form m-2 p2">
-    <div class="form-group">
+<form [formGroup]="userForm" class="course-form m-2 p2 ms-5">
+    <div class="form-group my-4">
         <label for="name">Nome</label>
         <input type="text" class="form-control" id="name" formControlName="userName">
     </div>
-    <div class="form-group">
+    <div class="form-group my-4">
         <label for="email">E-mail</label>
         <input type="text" class="form-control" id="email" formControlName="email">
     </div>
-    <div class="form-group">
+    <div class="form-group my-4">
         <label for="password">Senha</label>
         <input type="text" class="form-control" id="password" formControlName="password">
     </div>
-    <div id="divWalletBalance" class="form-group">
+    <div id="divWalletBalance" class="form-group my-4">
         <label for="number">Carteira</label>
         <input type="text" class="form-control" id="walletBalance" formControlName="walletBalance">
     </div>
-    <div id="divRole" class="form-group">
+    <div id="divRole" class="form-group my-4">
         <label for="role">Função</label>
-        <select name="role" id="role" formControlName="role">
-            <option value="0">Cliente</option>
+        <select name="role" id="role" formControlName="role" class="ms-3">
+            <option selected value="0">Cliente</option>
             <option value="1">Admin</option>
         </select>
     </div>

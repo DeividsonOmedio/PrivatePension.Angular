@@ -20,7 +20,6 @@ export class LoginApiService {
         this.token = res.token;
         sessionStorage.removeItem('token');
         sessionStorage.setItem('token', this.token);
-        console.log('Decoded token:', this.decodeToken(this.token));
       })
     );
   }

@@ -4,3 +4,6 @@
 .aportesTitle:first-child {
    display: block;
 }
+.table {
+   scale: .9;
+}

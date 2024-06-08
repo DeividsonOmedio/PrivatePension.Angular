@@ -9,13 +9,9 @@ import { IPurchaseDto } from '../../../dtos/purchaseDto';
   standalone: true,
   imports: [NgIf, DatePipe],
   templateUrl: './puschases.component.html',
-  styleUrl: './puschases.component.css'
+  styleUrls: ['./puschases.component.css']
 })
 export class PuschasesComponent implements OnInit {
-Approve() {
-throw new Error('Method not implemented.');
-}
-
   PurschaseAprovedList: IPurchase[] = []; 
   PurschaseAprovedListDto: IPurchaseDto[] = []; 
 
@@ -25,13 +21,21 @@ throw new Error('Method not implemented.');
     this.apiPuchasesService.purchasesAprovedList$.subscribe((puchasesAprovedList) => {
       this.PurschaseAprovedList = puchasesAprovedList;
       console.log(puchasesAprovedList);
-      this.apiPuchasesService.converter(this.PurschaseAprovedList).then((approvals) => {
-        this.PurschaseAprovedListDto = approvals;
-        console.log(this.PurschaseAprovedListDto);
-        });
-          });
+      this.updatePurchaseApprovedListDto();
+    });
   }
 
+  private updatePurchaseApprovedListDto(): void {
+    this.apiPuchasesService.converter(this.PurschaseAprovedList).then((approvals) => {
+      const uniqueApprovals = approvals.filter((approval, index, self) =>
+        index === self.findIndex((t) => t.id === approval.id && t.isApproved)
+      );
+      this.PurschaseAprovedListDto = uniqueApprovals;
+      console.log(this.PurschaseAprovedListDto);
+    });
+  }
 
-
+  Approve(purchaseId: number) {
+    throw new Error('Method not implemented.');
+  }
 }

@@ -6,3 +6,6 @@ app-header{
     padding: 1% 5%;
     border-bottom: 1px solid #e0e0e0;
 }
+router-outlet {
+    margin: 30px;
+}

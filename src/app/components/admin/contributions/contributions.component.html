@@ -1,5 +1,5 @@
 @if (ContribuitionListDto && ContribuitionListDto.length > 0) {
-    <h2 class="mb-3 mt-5 ms-2">Aportes</h2>
+    <h2 class="m-5 ps-3 mb-2">Aportes</h2>
     <table class="table p-3 border-3 table-striped">
         <thead class="table-secondary">
           <tr>
@@ -18,7 +18,7 @@
                     <td>{{ item.clientName }}</td>
                     <td>{{ item.productName }}</td>
                     <td>{{ item.purchaseId }}</td>
-                    <td>{{  item.amount | currency }}</td>
+                    <td>{{ item.amount | currency: 'BRL' }}</td>
                     <td>{{ item.contributionDate | date: 'dd/MM/yyyy - HH:mm:ss' }}</td>
                 </tr>
             }

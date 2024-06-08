@@ -27,7 +27,7 @@ export class ProductApiService {
   Initialize(){
     const token = this.decodeToken(this.token);
     if (token.role === 'admin'){
-      console.log('admin chegou');
+      ('admin chegou');
       this.getAllProducts();
     } else if(token.role === 'client') {
       this.getProductsForSale(token.nameid);
